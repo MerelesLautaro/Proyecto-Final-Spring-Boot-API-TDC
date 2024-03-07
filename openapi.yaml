@@ -1,0 +1,352 @@
+openapi: 3.0.1
+info:
+  title: API bazar proyecto final de TDC Spring Boot
+  description: Esta API permite realizar un CRUD de clientes, productos y ventas de un Bazar controla el stock existente e indica si es posible realizar una venta en caso que haya los productos necesarios.
+  version: 1.0.0
+servers:
+- url: localhost:8080
+tags:
+- name: Clientes
+  description: Operaciones con clientes
+- name: Productos
+  description: Operaciones con productos
+- name: Ventas
+  description: Operaciones con ventas
+
+components:
+  schemas:
+    VentaRequest:
+      type: object
+      properties:
+        codigo_venta:
+          type: integer
+          format: int64
+          description: Identificador único de la venta.
+        fecha_venta:
+          type: string
+          format: date
+          description: Fecha en la que se realizó la venta.
+        total:
+          type: number
+          format: double
+          description: Monto total de la venta.
+        listaProductos:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: Lista de productos vendidos en la venta.
+        unCliente:
+            type: integer
+            format: int64
+            description: Cliente asociado a la venta.
+
+    ClienteRequestBody:
+      type: object
+      properties:
+        id_cliente:
+          type: integer
+          format: int64
+          description: Identificador único del cliente.
+        nombre:
+          type: string
+          description: Nombre del cliente.
+        apellido:
+          type: string
+          description: Apellido del cliente.
+        dni:
+          type: string
+          description: DNI del cliente.
+
+    ProductoRequestBody:
+      type: object
+      properties:
+        codigo_producto:
+          type: integer
+          format: int64
+          description: Identificador único del producto.
+        nombre:
+          type: string
+          description: Nombre del producto.
+        marca:
+          type: string
+          description: Marca del producto.
+        costo:
+          type: number
+          format: double
+          description: Costo del producto.
+        cantidad_disponible:
+          type: number
+          format: double
+          description: Cantidad disponible del producto.
+    
+    VentaDTO:
+      type: object
+      properties:
+        codigo_venta:
+          type: integer
+          format: int64
+          description: Identificador único de la venta.
+        total:
+          type: number
+          format: double
+          description: Monto total de la venta.
+        cantidad_productos:
+          type: integer
+          description: Cantidad de productos en la venta.
+        nombre_cliente:
+          type: string
+          description: Nombre del cliente asociado a la venta.
+        apellido_cliente:
+          type: string
+          description: Apellido del cliente asociado a la venta.
+
+paths:
+  /clientes/crear:
+    post:
+      tags:
+      - Clientes
+      summary: Da de alta a un cliente en el sistema.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteRequestBody'
+      responses:
+        '200':
+          description: OK
+
+  /clientes:
+    get:
+      tags:
+      - Clientes
+      summary: Obitiene la información de todos los clientes del sistema.
+      responses:
+        '200':
+          description: OK
+
+  /clientes/{id_cliente}:
+    get:
+      tags:
+      - Clientes
+      summary: Obtiene la información de un cliente en especifico.
+      parameters:
+      - in: path
+        name: id_cliente
+        description: Identificador único del cliente.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+
+  /clientes/eliminar/{id_cliente}:
+    delete:
+      tags:
+      - Clientes
+      summary: Elimina la información de un cliente en especifico.
+      parameters:
+      - in: path
+        name: id_cliente
+        description: Identificador único del cliente.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+
+  /clientes/editar:
+    put:
+      tags:
+      - Clientes
+      summary: Edita la información de un cliente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteRequestBody'
+      responses:
+        '200':
+          description: OK
+
+  /productos/crear:
+    post:
+      tags:
+      - Productos
+      summary: Da de alta un producto.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoRequestBody'
+      responses:
+        '200':
+          description: OK
+
+  /productos:
+    get:
+      tags:
+      - Productos
+      summary: Muestra los productos.
+      responses:
+        '200':
+          description: OK
+
+  /productos/{codigo_producto}:
+    get:
+      tags:
+      - Productos
+      summary: Obtiene la información de un producto en especifico.
+      parameters:
+      - in: path
+        name: codigo_producto
+        description: Identificador único del producto.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+
+  /productos/eliminar/{codigo_producto}:
+    delete:
+      tags:
+      - Productos
+      summary: Elimina la información de un producto en especifico.
+      parameters:
+      - in: path
+        name: codigo_producto
+        description: Identificador único del producto.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+
+  /productos/editar:
+    put:
+      tags:
+      - Productos
+      summary: Edita un producto.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoRequestBody'
+      responses:
+        '200':
+          description: OK
+
+  /ventas/crear:
+    post:
+      tags:
+      - Ventas
+      summary: Dar de alta una Venta.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VentaRequest'
+      responses:
+        '200':
+          description: OK
+
+  /ventas:
+    get:
+      tags:
+      - Ventas
+      summary: Mostrar toda la información sobre las ventas.
+      responses:
+        '200':
+          description: OK
+  
+  /ventas/{codigo_venta}:
+    get:
+      tags:
+      - Ventas
+      summary: Muestra la información de una venta en especifico.
+      parameters:
+      - in: path
+        name: codigo_venta
+        description: Identificador único del producto.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+  
+  /ventas/eliminar/{codigo_venta}:
+    delete:
+      tags:
+      - Ventas
+      summary: Elimina la información de una venta en especifico.
+      parameters:
+      - in: path
+        name: codigo_venta
+        description: Identificador único del producto.
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+
+  /ventas/editar:
+    put:
+      tags:
+      - Ventas
+      summary: Editar una Venta.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VentaRequest'
+      responses:
+        '200':
+          description: OK
+
+  /ventas/fecha/{fecha_venta}:
+    get:
+      tags:
+      - Ventas
+      summary: Muestra la sumatoria del monto y la cantidad total de ventas de un determinado día.
+      parameters:
+      - in: path
+        name: fecha_venta
+        description: Fecha en la que se realizo la venta.
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: OK
+          
+  /ventas/mayor_venta:
+    get:
+      tags:
+      - Ventas
+      summary: Obtener la venta con el monto más alto.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VentaDTO'
